@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+
+  rabbitmq: 
+    container_name: "rabbitmq"
+    hostname: "rabbitmq"
+    image: rabbitmq:3.9.29-management
+    environment:
+        - RABBITMQ_DEFAULT_USER=guest
+        - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+        - '5672:5672'
+        - '15672:15672'
+
+  producerapp:
+    image: ${DOCKER_REGISTRY-}producerapp
+    build:
+      context: .
+      dockerfile: ProducerApp/Dockerfile
+
+  consumerapp:
+    image: ${DOCKER_REGISTRY-}consumerapp
+    build:
+      context: .
+      dockerfile: ConsumerApp/Dockerfile  
+
+  SqlServerDb:
+        container_name: SqlServerContainer
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+            - 8002:1433
+        environment:
+            - ACCEPT_EULA=Y
+            - MSSQL_SA_PASSWORD=myStong_Password123#  
